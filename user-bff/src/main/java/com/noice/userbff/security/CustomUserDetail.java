@@ -13,14 +13,17 @@ import java.util.List;
 public class CustomUserDetail  implements UserDetails {
     @JsonIgnore
     private final User user;
+    private final Long userID;
+
     public CustomUserDetail(User user) {
         this.user = user;
+        this.userID = user.getId();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority(user.getRole().getRoleType().name()));
+        authorities.add(new SimpleGrantedAuthority(user.getRole().name()));
         user.getPermissions().forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
         return authorities;
     }
@@ -53,5 +56,9 @@ public class CustomUserDetail  implements UserDetails {
     @Override
     public boolean isEnabled() {
         return user.getEnabled();
+    }
+
+    public Long getUserID() {
+        return userID;
     }
 }

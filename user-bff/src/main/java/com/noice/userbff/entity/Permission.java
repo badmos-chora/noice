@@ -19,13 +19,6 @@ public class Permission {
 
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "permission_role",
-            joinColumns = @JoinColumn(name = "permission_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"),
-            uniqueConstraints = {@UniqueConstraint(name = "permission_role_unique_assoc",columnNames = {"permission_id","role_id"})})
-    private Set<Role> associatedRoles;
-
     @ManyToMany(mappedBy = "permissions")
     private Set<User> users = new LinkedHashSet<>();
 

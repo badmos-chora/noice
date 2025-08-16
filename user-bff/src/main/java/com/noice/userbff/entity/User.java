@@ -1,8 +1,10 @@
 package com.noice.userbff.entity;
 
 
+import com.noice.userbff.enums.RoleType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -31,6 +33,7 @@ public class User {
     @NotBlank
     private String email;
     @NotBlank
+    @Size(min = 7, max = 20)
     private String phoneNumber;
     @Builder.Default
     private Boolean enabled=true;
@@ -39,11 +42,11 @@ public class User {
     @JoinTable(name = "users_permissions",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "permissions_id"))
+    @Builder.Default
     private Set<Permission> permissions = new LinkedHashSet<>();
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+    @Enumerated(EnumType.STRING)
+    private RoleType role;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
