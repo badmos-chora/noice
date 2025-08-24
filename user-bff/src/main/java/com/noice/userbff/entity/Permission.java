@@ -19,6 +19,8 @@ public class Permission {
 
     private String name;
 
+    private String defaultRoles;
+
     @ManyToMany(mappedBy = "permissions")
     private Set<User> users = new LinkedHashSet<>();
 
