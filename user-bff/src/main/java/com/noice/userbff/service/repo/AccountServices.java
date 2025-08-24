@@ -1,12 +1,13 @@
 package com.noice.userbff.service.repo;
 
 import com.noice.userbff.dto.UserDto;
+import com.noice.userbff.enums.RoleType;
 import com.noice.userbff.projection.UserProfileProjection;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 
 public interface AccountServices {
-    void registerUser(@Valid UserDto userDto);
+    void registerUser(@Valid UserDto userDto, RoleType role);
 
     String authenticate(@NotBlank String username, @NotBlank String password);
 

@@ -2,6 +2,7 @@ package com.noice.userbff.controller;
 
 import com.noice.userbff.dto.LoginDto;
 import com.noice.userbff.dto.UserDto;
+import com.noice.userbff.enums.RoleType;
 import com.noice.userbff.projection.UserProfileProjection;
 import com.noice.userbff.service.repo.AccountServices;
 import jakarta.validation.Valid;
@@ -33,9 +34,16 @@ public class AccountController {
         return accountServices.authenticate(loginDto.username(),loginDto.password());
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Void> register(@Valid @RequestBody UserDto userDto){
-         accountServices.registerUser(userDto);
+    @PostMapping("/register/{access}")
+    @PreAuthorize("#access=='CLIENT' or #access=='SELLER' or (#access =='ADMIN' and hasAuthority('account.create'))")
+    public ResponseEntity<Void> register(@PathVariable String access, @Valid @RequestBody UserDto userDto){
+        var role = switch (access.toLowerCase()) {
+            case "client" -> RoleType.ROLE_CLIENT;
+            case "seller"   -> RoleType.ROLE_SELLER;
+            case "admin"    -> RoleType.ROLE_ADMIN;
+            default -> throw new IllegalStateException("Unexpected value: " + access.toLowerCase());
+        };
+         accountServices.registerUser(userDto,role);
          return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -26,14 +26,14 @@ public class AccountServiceImpl implements AccountServices {
 
 
     @Override
-    public void registerUser(UserDto userDto) {
+    public void registerUser(UserDto userDto, RoleType role) {
         User.UserBuilder userBuilder = User.builder();
 
         userBuilder.firstName(userDto.firstName())
             .lastName(userDto.lastName())
             .email(userDto.email())
             .password(passwordEncoder.encode(userDto.password()))
-                .role(RoleType.ROLE_CUSTOMER)
+                .role(role)
                 .phoneNumber(userDto.phoneNumber());
 
         userRepository.save(userBuilder.build());
