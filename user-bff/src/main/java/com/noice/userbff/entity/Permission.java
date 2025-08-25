@@ -1,8 +1,7 @@
 package com.noice.userbff.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.LinkedHashSet;
 import java.util.Objects;
@@ -12,6 +11,9 @@ import java.util.Set;
 @Table(name = "permissions", uniqueConstraints = {@UniqueConstraint(name = "permission_name_unique",columnNames = "name")})
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Permission {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
