@@ -17,4 +17,9 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     @Query("select u from User u where upper(u.email) = upper(?1) or u.phoneNumber = ?1")
     @EntityGraph(type = EntityGraph.EntityGraphType.FETCH,attributePaths = {"permissions"})
     Optional<User> findByEmailIgnoreCaseOrPhoneNumber(@NonNull String search);
+
+    @Query("select u from User u where u.id=?1")
+    @EntityGraph(type = EntityGraph.EntityGraphType.FETCH,attributePaths = {"permissions"})
+    Optional<User> findByIdWithPermissions(@NonNull Long id);
+
 }
