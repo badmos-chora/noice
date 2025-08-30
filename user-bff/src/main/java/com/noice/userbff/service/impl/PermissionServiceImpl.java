@@ -10,11 +10,11 @@ import com.noice.userbff.repository.UserRepository;
 import com.noice.userbff.service.repo.PermissionService;
 import lombok.AllArgsConstructor;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -46,8 +46,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     @Transactional
-    public void assign(@NonNull Long userId, Set<Long> ids) {
-
+    public void assign(@NonNull Long userId, @Nullable Set<Long> ids) {
         User user = userRepository.findByIdWithPermissions(userId).orElseThrow(()-> new NoiceBusinessLogicException("User Not Found For Id "+userId));
         Set<Permission> permissions =user.getPermissions();
         if(ids==null || ids.isEmpty()){
