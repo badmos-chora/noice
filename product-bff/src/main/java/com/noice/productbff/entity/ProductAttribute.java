@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -24,7 +25,11 @@ public class ProductAttribute {
     private String name;
 
     @OneToMany(orphanRemoval = true)
-    private Set<ProductAttributeValue> values;
+    @Builder.Default
+    private Set<ProductAttributeValue> values= new HashSet<>();
+
+    @Builder.Default
+    private Boolean active=true;
 
     @Override
     public final boolean equals(Object o) {
