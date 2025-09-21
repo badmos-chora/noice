@@ -10,13 +10,12 @@ public class ProductController {
 
     @GetMapping("/unauth")
     public String unAuth(){
-        return "unAuth";
+        return "unAuth" ;
     }
 
     @GetMapping("/auth")
     public String Auth() {
-        return "Auth";
+        return "Auth ";
     }
-
 
 }

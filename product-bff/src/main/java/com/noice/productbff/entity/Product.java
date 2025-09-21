@@ -6,13 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.type.SqlTypes;
 
-import java.time.Instant;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 
@@ -23,7 +25,8 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "products")
-public class Product {
+@SoftDelete
+public class Product  extends AuditableBaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,11 +34,12 @@ public class Product {
 
     @NotBlank
     @Column(unique = true,nullable = false,length = 100)
+    @NaturalId(mutable = true)
     private String slug;
 
     @Enumerated(EnumType.STRING)
     @NotBlank
-    @Column(unique = true,nullable = false)
+    @Column(nullable = false)
     private ProductStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -54,28 +58,34 @@ public class Product {
     @JdbcTypeCode(SqlTypes.LONG32VARCHAR)
     private String description;
 
-    @CreationTimestamp
-    @Column(nullable = false,updatable = false)
-    private Instant createdDate;
-
-    private Long createdBy;
-
-    @UpdateTimestamp
-    private Instant modifiedDate;
-
-    private Long updatedBy;
-
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String,Object> seo;
 
-    @OneToMany(orphanRemoval = true,mappedBy = "product")
-    private Set<ProductVariant> variants;
+    @OneToMany(orphanRemoval = true,mappedBy = "product", fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
+    @Builder.Default
+    private Set<ProductVariant> variants = new HashSet<>();
 
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE},fetch =  FetchType.LAZY)
+    @Builder.Default
+    @JoinTable(name = "product_category_mapping", uniqueConstraints = @UniqueConstraint(name = "product_category_unique_constraint",columnNames = {"category_id","product_id" }),
+            joinColumns = @JoinColumn(name = "category_id",nullable = false), inverseJoinColumns = @JoinColumn(name = "product_id"),
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),inverseForeignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private Set<Category> categories = new HashSet<>();
 
 
     @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        Product product = (Product) o;
+        return getSlug() != null && Objects.equals(getSlug(), product.getSlug());
     }
 
+    @Override
+    public final int hashCode() {
+        return Objects.hash(slug);
+    }
 }

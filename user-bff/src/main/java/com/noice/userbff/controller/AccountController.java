@@ -4,6 +4,7 @@ import com.noice.userbff.dto.LoginDto;
 import com.noice.userbff.dto.UserDto;
 import com.noice.userbff.enums.RoleType;
 import com.noice.userbff.projection.UserProfileProjection;
+import com.noice.userbff.security.SecurityUtils;
 import com.noice.userbff.service.repo.AccountServices;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class AccountController {
 
     @GetMapping("/user")
     public String user(){
-        return "user";
+        return "user " + SecurityUtils.getCurrentUserId();
     }
 
     @PostMapping("/signin")
@@ -49,13 +50,13 @@ public class AccountController {
 
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('account.get') or #id == authentication.principal.id")
+    @PreAuthorize("hasAuthority('account.get') or #id == authentication.principal.claims['id']")
     public ResponseEntity<UserProfileProjection> getProfile(@PathVariable("id") Long id) {
         return ResponseEntity.ok().body(accountServices.getProfile(id));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('account.update') or #id == authentication.principal.id")
+    @PreAuthorize("hasAuthority('account.update') or #id == authentication.principal.claims['id']")
     public ResponseEntity<Void> updateProfile(@Valid @RequestBody UserDto userDto,
                                               @PathVariable Long id) {
         accountServices.updateUser(userDto, id);
