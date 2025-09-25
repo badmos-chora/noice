@@ -1,5 +1,6 @@
 package com.noice.productbff.entity;
 
+import com.noice.productbff.enums.Department;
 import com.noice.productbff.enums.ProductStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -72,6 +73,10 @@ public class Product  extends AuditableBaseEntity{
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT),inverseForeignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Set<Category> categories = new HashSet<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @NotNull
+    private Department department;
 
     @Override
     public final boolean equals(Object o) {

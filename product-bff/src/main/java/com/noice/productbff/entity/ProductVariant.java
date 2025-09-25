@@ -8,10 +8,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.proxy.HibernateProxy;
 
-import java.time.Instant;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -19,8 +20,9 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SoftDelete
 @Table(name = "product_variants")
-public class ProductVariant {
+public class ProductVariant extends AuditableBaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +36,8 @@ public class ProductVariant {
     private Set<ProductVariantAttribute> attributes;
 
     @NotBlank
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true,updatable = false)
+    @NaturalId
     private String code;
 
     @Column(name = "weight_in_grams",nullable = false)
@@ -57,32 +60,21 @@ public class ProductVariant {
     @Column(name = "height_in_mm",nullable = false)
     private Double heightInMM;
 
-    @NotBlank
-    @Column(nullable = false)
-    private String countryOfOrigin;
-
-    @CreationTimestamp
-    @Column(nullable = false,updatable = false)
-    private Instant createdDate;
-
-    private Long createdBy;
-
-    @UpdateTimestamp
-    private Instant modifiedDate;
-
-    private Long updatedBy;
-
     private String attributeHash;
 
     @Override
     public final boolean equals(Object o) {
-        if (!(o instanceof ProductVariant that)) return false;
-        return id.equals(that.id);
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        ProductVariant that = (ProductVariant) o;
+        return getCode() != null && Objects.equals(getCode(), that.getCode());
     }
 
     @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public final int hashCode() {
+        return Objects.hash(code);
     }
-
 }
