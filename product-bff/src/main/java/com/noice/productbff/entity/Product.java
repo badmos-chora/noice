@@ -43,7 +43,7 @@ public class Product  extends AuditableBaseEntity{
     @Column(nullable = false)
     private ProductStatus status;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(optional = false)
     @NotNull
     private Brand brand;
 
