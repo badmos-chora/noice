@@ -6,6 +6,8 @@ import com.noice.userbff.enums.RoleType;
 import com.noice.userbff.projection.UserProfileProjection;
 import com.noice.userbff.security.SecurityUtils;
 import com.noice.userbff.service.repo.AccountServices;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/account")
 @AllArgsConstructor
+@Tag(name = "Users", description = "User operations")
 public class AccountController {
 
     private AccountServices accountServices;
@@ -36,7 +39,10 @@ public class AccountController {
     }
 
     @PostMapping("/register/{access}")
-    @PreAuthorize("#access=='CLIENT' or #access=='SELLER' or (#access =='ADMIN' and hasAuthority('account.create'))")
+    @Operation(
+            summary = "Get user by id",
+            description = "Returns a single user by id"
+    )
     public ResponseEntity<Void> register(@PathVariable String access, @Valid @RequestBody UserDto userDto){
         var role = switch (access.toLowerCase()) {
             case "client" -> RoleType.ROLE_CLIENT;

@@ -51,7 +51,7 @@ public class JWTConfig {
         var builder = new JWTClaimsSet.Builder()
                 .issuer("Connect")
                 .issueTime(Date.from(now))
-                .expirationTime(Date.from(now.plus(1, java.time.temporal.ChronoUnit.HOURS)));
+                .expirationTime(Date.from(now.plusSeconds(jwtExpiration)));
         builder.claim("roles", roles);
         var user = (CustomUserDetail) authentication.getPrincipal();
         builder.claim("id", user.getUserID());

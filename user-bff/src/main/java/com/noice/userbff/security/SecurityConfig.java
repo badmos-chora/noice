@@ -30,7 +30,6 @@ import java.util.stream.Collectors;
 
 @Configuration
 @AllArgsConstructor
-@EnableMethodSecurity
 public class SecurityConfig {
     private final JWTConfig jwtConfig;
 
@@ -41,6 +40,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/account/register","/account/login","/account/signin")
                         .permitAll()
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
                         .anyRequest().authenticated())
 //                .exceptionHandling(ex -> ex.authenticationEntryPoint(customEntryPointHandler))
                 .sessionManagement(sessionManagement -> sessionManagement

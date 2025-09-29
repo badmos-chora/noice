@@ -1,6 +1,7 @@
 package com.noice.userbff.controller;
 
 import com.noice.userbff.dto.PermissionDto;
+import com.noice.userbff.projection.PermissionListProjection;
 import com.noice.userbff.service.repo.PermissionService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -17,15 +19,15 @@ import java.util.Set;
 @AllArgsConstructor
 public class PermissionController {
 
-    private PermissionService permissionService;
+    private final PermissionService permissionService;
 
-    @GetMapping({"","/"})
+    @GetMapping
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('permission.list')")
-    public ResponseEntity<?> list(){
+    public ResponseEntity<List<PermissionListProjection>> list(){
         return ResponseEntity.ok().body(permissionService.list());
     }
 
-    @PostMapping({"","/"})
+    @PostMapping
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('permission.create')")
     public ResponseEntity<?> create(@Valid @RequestBody PermissionDto permissionDto){
         permissionService.add(permissionDto);
@@ -34,7 +36,7 @@ public class PermissionController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') and hasAuthority('permission.view')")
-    public ResponseEntity<?> view(@PathVariable @NotNull Long id){
+    public ResponseEntity<PermissionListProjection> view(@PathVariable @NotNull Long id){
         return ResponseEntity.status(HttpStatus.OK).body(permissionService.view(id));
     }
 
