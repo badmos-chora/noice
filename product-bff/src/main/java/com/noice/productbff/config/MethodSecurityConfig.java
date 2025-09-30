@@ -17,12 +17,14 @@ import org.springframework.security.core.Authentication;
 
 @Configuration(proxyBeanMethods = false)
 @EnableMethodSecurity(prePostEnabled = false)
+@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class MethodSecurityConfig {
 
     private static final String SUPERADMIN_AUTHORITY = "ROLE_SUPER_ADMIN";
 
 
     @Bean
+    @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public static MethodSecurityExpressionHandler methodSecurityExpressionHandler() {
         return new DefaultMethodSecurityExpressionHandler();
     }
