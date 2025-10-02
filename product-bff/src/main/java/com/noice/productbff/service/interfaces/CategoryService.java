@@ -3,12 +3,13 @@ package com.noice.productbff.service.interfaces;
 
 import com.noice.productbff.dto.CategoryDto;
 import com.noice.productbff.projection.CategoryInfoProjection;
+import org.springframework.data.domain.Page;
 
 
-import java.util.List;
+
 
 public interface CategoryService {
-    List<CategoryInfoProjection> list(Integer page, Integer size, String sortBy, String sortDirection);
+    Page<CategoryInfoProjection> list(Integer page, Integer size, String sortBy, String sortDirection);
 
     void create(CategoryDto category);
 

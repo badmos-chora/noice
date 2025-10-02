@@ -8,12 +8,13 @@ import com.noice.productbff.repository.CategoryRepository;
 import com.noice.productbff.service.interfaces.CategoryService;
 import com.noice.productbff.utils.GeneralUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+
 import java.util.Set;
 
 @Service
@@ -25,20 +26,13 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public List<CategoryInfoProjection> list(Integer page, Integer size, String sortBy,String sortDirection)
+    public Page<CategoryInfoProjection> list(Integer page, Integer size, String sortBy, String sortDirection)
     {
         if (!ALLOWED_SORTS.contains(sortBy)) {
             throw new IllegalArgumentException("Invalid sort field: " + sortBy);
         }
         Pageable pageRequest = GeneralUtils.getPageable(page, size, sortDirection, sortBy);
-        if (page == -1) {
-            return categoryRepository
-                    .findBy(Specification.unrestricted(),
-                            query -> query.as(CategoryInfoProjection.class).sortBy(pageRequest.getSort()))
-                    .all();
-        }
-
-        return categoryRepository.findBy(Specification.unrestricted(), f -> f.as(CategoryInfoProjection.class).sortBy(pageRequest.getSort()).page(pageRequest)).getContent();
+        return categoryRepository.findBy(Specification.unrestricted(), f -> f.as(CategoryInfoProjection.class).sortBy(pageRequest.getSort()).page(pageRequest));
     }
 
     @Override

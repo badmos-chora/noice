@@ -2,18 +2,21 @@ package com.noice.productbff.controller;
 
 import com.noice.productbff.dto.BrandCreateDto;
 import com.noice.productbff.service.interfaces.BrandServices;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/brand")
+@RequestMapping(value = "/brand",produces = MediaType.APPLICATION_JSON_VALUE)
 @AllArgsConstructor
+@Tag(name = "Brand", description = "Manage brands")
 public class BrandController {
 
     private BrandServices brandServices;

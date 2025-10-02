@@ -23,7 +23,10 @@ public class GeneralUtils {
             .build();
 
     public static Pageable getPageable(Integer page, Integer size, String sortBy, String sortDirection) {
-        return PageRequest.of(page,size,Sort.Direction.valueOf(sortDirection), sortBy);
+        if (page == -1) {
+            return Pageable.unpaged(Sort.by(Sort.Direction.valueOf(sortDirection), sortBy));
+        }
+        return PageRequest.of(page, size, Sort.Direction.valueOf(sortDirection), sortBy);
     }
 
     public static String slugify(String slug) {
