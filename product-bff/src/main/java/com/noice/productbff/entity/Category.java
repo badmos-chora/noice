@@ -32,7 +32,7 @@ public class Category  extends AuditableBaseEntity{
     @Column(unique = true, nullable = false)
     private String slug;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private Category parent;
 

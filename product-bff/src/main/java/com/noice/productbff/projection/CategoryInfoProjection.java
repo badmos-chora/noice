@@ -1,6 +1,5 @@
 package com.noice.productbff.projection;
 
-import com.noice.productbff.entity.Category;
 
 import java.util.List;
 
