@@ -2,16 +2,18 @@ package com.noice.media.entity;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @DiscriminatorValue("IMAGE")
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@SuperBuilder
 public class ImageAsset extends Asset {
-    private Integer width;
-    private Integer height;
+    @NotNull(message = "image width required") private Integer width;
+    @NotNull(message = "image height required") private Integer height;
 }
 

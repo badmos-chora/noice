@@ -1,4 +1,4 @@
-package com.noice.media.config;
+package com.noice.media.security;
 
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.Advisor;
