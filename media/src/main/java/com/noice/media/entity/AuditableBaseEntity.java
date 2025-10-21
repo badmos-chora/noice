@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -21,6 +21,7 @@ import java.time.Instant;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @JsonIgnoreProperties(value = {"createdDate", "createdBy", "lastModifiedDate", "lastModifiedBy", "version"},
         allowGetters = true)
+@SuperBuilder
 public class AuditableBaseEntity {
 
     @CreatedDate
