@@ -7,7 +7,6 @@ import com.noice.productbff.enums.ProductStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -22,5 +21,6 @@ public record ProductCreteDto(@NotBlank(message = "product slug required") Strin
                               @Size(max = 500) String subTitle,
                               @NotBlank(message = "description is required") String description,
                               @NotNull(message = "department is required") Department department,
-                              Set<Long> categoryIds) implements Serializable {
+                              Set<Long> categoryIds
+                              ) implements Serializable {
 }
