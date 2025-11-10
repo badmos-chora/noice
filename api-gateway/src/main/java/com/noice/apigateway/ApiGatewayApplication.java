@@ -1,4 +1,4 @@
-package com.noice.userbff;
+package com.noice.apigateway;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-public class UserBffApplication {
+public class ApiGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserBffApplication.class, args);
+        SpringApplication.run(ApiGatewayApplication.class, args);
     }
 
 }
