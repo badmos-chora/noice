@@ -1,0 +1,102 @@
+worker_processes  1;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    # Logging
+    access_log  logs/access.log;
+    error_log   logs/error.log;
+
+    # Upstreams with advanced features
+    upstream user_bff {
+        zone user_bff 64k;           # shared state across NGINX workers
+        least_conn;                  # better than pure RR under uneven load
+        server localhost:8080;
+        keepalive 32;                # connection pool size
+    }
+
+    upstream product_bff {
+        zone product_bff 64k;
+        least_conn;
+        server localhost:8081;
+        keepalive 32;
+    }
+
+    upstream media_svc {
+        zone media_svc 64k;
+        least_conn;
+        server localhost:8082;
+        keepalive 32;
+    }
+
+    upstream notification_svc {
+        zone notification_svc 64k;
+        least_conn;
+        server localhost:8083;
+        keepalive 32;
+    }
+
+    server {
+        listen 80;
+        server_name _;
+
+        # If you accept uploads (e.g., media)
+        client_max_body_size 220m;
+
+        # Standard proxy headers
+        proxy_set_header Host               $host;
+        proxy_set_header X-Real-IP          $remote_addr;
+        proxy_set_header X-Forwarded-For    $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_set_header X-Forwarded-Host   $host;
+        proxy_set_header X-Forwarded-Port   $server_port;
+        proxy_set_header X-Request-Id       $request_id;
+        proxy_set_header Authorization      $http_authorization;
+
+        # Keep connections alive to the upstreams (HTTP/1.1 with connection pooling)
+        proxy_http_version 1.1;
+        proxy_set_header Connection "";
+
+        # Timeouts
+        proxy_connect_timeout 60s;
+        proxy_send_timeout    60s;
+        proxy_read_timeout    60s;
+        send_timeout          60s;
+
+        # Routes (path preserved - NO trailing slash in proxy_pass)
+        location ^~ /u/ {
+            proxy_pass http://user_bff;
+        }
+
+        location ^~ /p/ {
+            proxy_pass http://product_bff;
+        }
+
+        location ^~ /m/ {
+            proxy_pass http://media_svc;
+        }
+
+        location ^~ /n/ {
+            proxy_pass http://notification_svc;
+        }
+
+        # Health check
+        location = /nginx/healthz {
+            return 200 'ok';
+            add_header Content-Type text/plain;
+        }
+
+        # Everything else returns 404
+        location / {
+            return 404;
+        }
+    }
+}
