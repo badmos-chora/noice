@@ -38,7 +38,6 @@ dependencies {
     implementation 'org.apache.tika:tika-core:3.2.3'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
     implementation 'commons-io:commons-io:2.20.0'
-    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'org.postgresql:postgresql'
