@@ -17,28 +17,24 @@ http {
 
     # Upstreams with advanced features
     upstream user_bff {
-        zone user_bff 64k;           # shared state across NGINX workers
         least_conn;                  # better than pure RR under uneven load
         server localhost:8080;
         keepalive 32;                # connection pool size
     }
 
     upstream product_bff {
-        zone product_bff 64k;
         least_conn;
         server localhost:8081;
         keepalive 32;
     }
 
     upstream media_svc {
-        zone media_svc 64k;
         least_conn;
         server localhost:8082;
         keepalive 32;
     }
 
     upstream notification_svc {
-        zone notification_svc 64k;
         least_conn;
         server localhost:8083;
         keepalive 32;
@@ -73,19 +69,19 @@ http {
 
         # Routes (path preserved - NO trailing slash in proxy_pass)
         location ^~ /u/ {
-            proxy_pass http://user_bff;
+            proxy_pass http://user_bff/;
         }
 
         location ^~ /p/ {
-            proxy_pass http://product_bff;
+            proxy_pass http://product_bff/;
         }
 
         location ^~ /m/ {
-            proxy_pass http://media_svc;
+            proxy_pass http://media_svc/;
         }
 
         location ^~ /n/ {
-            proxy_pass http://notification_svc;
+            proxy_pass http://notification_svc/;
         }
 
         # Health check
